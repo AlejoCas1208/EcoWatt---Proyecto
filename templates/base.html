@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EcoWatt - Plataforma para monitoreo energético del hogar (ODS 7).">
+    <title>EcoWatt - Eficiencia Energética ODS 7</title>
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body { background-color: #f4f6f8; font-family: system-ui, -apple-system, sans-serif; color: #212529; }
+        .card-custom { border-radius: 12px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .nav-link-custom { color: #ffffff; text-decoration: none; margin-right: 15px; font-weight: 500; }
+        .bg-success-custom { background-color: #146c43 !important; }
+        .btn-success { background-color: #146c43; border-color: #13653f; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-success-custom mb-4 shadow" aria-label="Navegación principal">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">⚡ EcoWatt (ODS 7)</a>
+                <div class="d-flex align-items-center">
+                    <a href="{{ url_for('index') }}" class="nav-link-custom">Dashboard</a>
+                    <a href="{{ url_for('manage_appliances') }}" class="nav-link-custom">Electrodomésticos</a>
+                    <a href="{{ url_for('manage_bills') }}" class="nav-link-custom">Facturas y Consumo Real</a>
+                    {% if session.get('username') %}
+                        <span class="text-light me-3">👤 {{ session.get('username') }}</span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-sm me-2">Iniciar Sesión</a>
+                        <a href="{{ url_for('register') }}" class="btn btn-warning btn-sm text-dark fw-bold">Registrarse</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar alerta"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="text-center py-4 text-muted mt-5 border-top">
+        <p class="small mb-0">&copy; 2026 EcoWatt - Proyecto de Eficiencia Energética (ODS 7)</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+</body>
+</html>

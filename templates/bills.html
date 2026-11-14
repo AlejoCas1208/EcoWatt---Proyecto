@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5 mb-4">
+        <div class="card card-custom p-4 bg-white">
+            {% if editing_bill %}
+                <h1 class="h4 text-warning fw-bold mb-3">✏️ Editar Factura</h1>
+                <form action="{{ url_for('edit_bill', id=editing_bill.id) }}" method="POST">
+            {% else %}
+                <h1 class="h4 text-success fw-bold mb-3">📄 Registrar Factura Real</h1>
+                <form action="{{ url_for('manage_bills') }}" method="POST">
+            {% endif %}
+                <div class="mb-3">
+                    <label for="bill_period" class="form-label fw-semibold">Periodo (Mes/Año)</label>
+                    <input type="text" id="bill_period" name="period" class="form-control" value="{{ editing_bill.period if editing_bill else '' }}" placeholder="Ej: Octubre 2026" required>
+                </div>
+                <div class="mb-3">
+                    <label for="bill_kwh" class="form-label fw-semibold">Consumo Real (kWh)</label>
+                    <input type="number" step="any" id="bill_kwh" name="kwh" class="form-control" value="{{ editing_bill.kwh if editing_bill else '' }}" placeholder="Ej: 210" required>
+                </div>
+                <div class="mb-3">
+                    <label for="bill_cost" class="form-label fw-semibold">Costo Total ($)</label>
+                    <input type="number" step="any" id="bill_cost" name="cost" class="form-control" value="{{ editing_bill.cost if editing_bill else '' }}" placeholder="Ej: 150000">
+                </div>
+
+                {% if editing_bill %}
+                    <button type="submit" class="btn btn-warning w-100 fw-bold">Actualizar Factura</button>
+                    <a href="{{ url_for('manage_bills') }}" class="btn btn-outline-secondary w-100 mt-2">Cancelar</a>
+                {% else %}
+                    <button type="submit" class="btn btn-success w-100">Guardar Factura</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-7 mb-4">
+        <div class="card card-custom p-4 bg-white">
+            <h2 class="h4 fw-bold mb-3">Historial de Facturas</h2>
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">Periodo</th>
+                        <th scope="col">Consumo (kWh)</th>
+                        <th scope="col">Costo ($)</th>
+                        <th scope="col" class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr>
+                        <td><strong>{{ bill.period }}</strong></td>
+                        <td>{{ bill.kwh }} kWh</td>
+                        <td>${{ bill.cost }}</td>
+                        <td class="text-end">
+                            <a href="{{ url_for('edit_bill', id=bill.id) }}" class="btn btn-sm btn-outline-primary me-1">✏️ Editar</a>
+                            <a href="{{ url_for('delete_bill', id=bill.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro que deseas eliminar esta factura?');">🗑️</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No has registrado facturas aún.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card card-custom p-4 bg-white">
+            <h1 class="h3 text-success fw-bold text-center mb-3">Crear Cuenta</h1>
+            <form action="{{ url_for('register') }}" method="POST">
+                <div class="mb-3">
+                    <label for="reg_username" class="form-label fw-semibold">Nombre de Usuario</label>
+                    <input type="text" id="reg_username" name="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="reg_password" class="form-label fw-semibold">Contraseña</label>
+                    <input type="password" id="reg_password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-warning w-100 text-dark fw-bold">Registrarse</button>
+            </form>
+            <div class="text-center mt-3">
+                <small>¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesión</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

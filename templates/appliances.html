@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5 mb-4">
+        <div class="card card-custom p-4 bg-white">
+            {% if editing_appliance %}
+                <h1 class="h4 text-warning fw-bold mb-3">✏️ Editar Electrodoméstico</h1>
+                <form action="{{ url_for('edit_appliance', id=editing_appliance.id) }}" method="POST">
+            {% else %}
+                <h1 class="h4 text-success fw-bold mb-3">⚡ Agregar Electrodoméstico</h1>
+                <form action="{{ url_for('manage_appliances') }}" method="POST">
+            {% endif %}
+                <div class="mb-3">
+                    <label for="appliance_name" class="form-label fw-semibold">Nombre del equipo</label>
+                    <input type="text" id="appliance_name" name="name" class="form-control" value="{{ editing_appliance.name if editing_appliance else '' }}" placeholder="Ej: Nevera, TV, Horno" required>
+                </div>
+                <div class="mb-3">
+                    <label for="appliance_power" class="form-label fw-semibold">Potencia (Watts)</label>
+                    <input type="number" step="any" id="appliance_power" name="power" class="form-control" value="{{ editing_appliance.power if editing_appliance else '' }}" placeholder="Ej: 150" required>
+                </div>
+                <div class="mb-3">
+                    <label for="appliance_hours" class="form-label fw-semibold">Horas de uso diario</label>
+                    <input type="number" step="any" id="appliance_hours" name="hours" class="form-control" value="{{ editing_appliance.hours if editing_appliance else '' }}" placeholder="Ej: 8" required>
+                </div>
+                
+                {% if editing_appliance %}
+                    <button type="submit" class="btn btn-warning w-100 fw-bold">Actualizar Cambios</button>
+                    <a href="{{ url_for('manage_appliances') }}" class="btn btn-outline-secondary w-100 mt-2">Cancelar</a>
+                {% else %}
+                    <button type="submit" class="btn btn-success w-100">Guardar Electrodoméstico</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-7 mb-4">
+        <div class="card card-custom p-4 bg-white">
+            <h2 class="h4 fw-bold mb-3">Mis Electrodomésticos</h2>
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Potencia</th>
+                        <th scope="col">Horas/Día</th>
+                        <th scope="col">Consumo Est.</th>
+                        <th scope="col" class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in appliances %}
+                    <tr>
+                        <td><strong>{{ app.name }}</strong></td>
+                        <td>{{ app.power }} W</td>
+                        <td>{{ app.hours }} hrs</td>
+                        <td>{{ ((app.power * app.hours * 30) / 1000) | round(1) }} kWh/mes</td>
+                        <td class="text-end">
+                            <a href="{{ url_for('edit_appliance', id=app.id) }}" class="btn btn-sm btn-outline-primary me-1">✏️ Editar</a>
+                            <a href="{{ url_for('delete_appliance', id=app.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro que deseas eliminar este equipo?');">🗑️</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No has registrado electrodomésticos aún.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
